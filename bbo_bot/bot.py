@@ -34,15 +34,17 @@ from .config import Config
 log = logging.getLogger(__name__)
 
 AYUDA = """\
-Soy la voz de Barcelona Bitcoin Only. Preguntame lo que quieras sobre Bitcoin,
-la comunidad o el manifiesto — mencioname o contestá a un mensaje mío.
+Soy Roser. Rose pone orden en el grupo; yo pongo contexto.
+
+Preguntame lo que quieras sobre Bitcoin, la comunidad o el manifiesto —
+mencioname o contestá a un mensaje mío. Ninguna duda es demasiado básica.
 
 /meetup — próximo encuentro
 /precio /fees /bloque /halving — datos de nuestro nodo
 /manifiesto /cita — el manifiesto de la comunidad
 /reglas — las reglas del grupo
 
-Lo delicado lo mira un humano, no yo."""
+Lo delicado —estafas, custodia, impuestos— lo mira un humano, no yo."""
 
 
 def _link(chat_id: int, message_id: int) -> str:
@@ -156,7 +158,7 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         if not cfg.dm_abierto and user.id not in cfg.dm_allowlist:
             await msg.reply_text(
                 "Por privado solo hablo con los admins. Preguntame en el grupo — "
-                "y ojo: nadie de BBO te escribe primero por privado."
+                "y ojo: nadie de BBO te escribe primero por privado. Nadie."
             )
             return
     else:

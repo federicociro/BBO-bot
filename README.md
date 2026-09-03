@@ -1,8 +1,12 @@
 # bbo-bot
 
-La voz de **Barcelona Bitcoin Only** en Telegram: Claude Opus con el manifiesto
-de la comunidad delante, contestando con paciencia las preguntas que se repiten
-mil veces, y escalando a los admins lo que no le toca.
+**Roser**, la voz de **Barcelona Bitcoin Only** en Telegram: Claude Opus con el
+manifiesto de la comunidad delante, contestando con paciencia las preguntas que
+se repiten mil veces, y escalando a los admins lo que no le toca.
+
+El nombre es un guiño a Rose, la bot que modera el grupo: Rose pone orden,
+Roser pone contexto. Perspicaz, con carácter y algo picante — pero el filo va
+contra las ideas y las estafas, nunca contra quien pregunta.
 
 El spec vive en el vault: `notes_sync/bbo-project/SPEC.md`.
 
@@ -26,6 +30,12 @@ uv run pytest
 uv run python -m bbo_bot
 ```
 
+## Metadata de los bots
+
+Nombre, bio, descripción (ES/CA/EN) y comandos se aplican con
+`scripts/set-bot-metadata.sh <token> "Nombre"`. El @usuario y la foto de perfil
+solo se cambian a mano en BotFather.
+
 ## Comandos
 
 | | |
@@ -40,7 +50,7 @@ uv run python -m bbo_bot
 
 | Querés cambiar | Editás |
 |---|---|
-| El tono, los límites, cuándo escala | `bbo_bot/persona.py` |
+| El carácter de Roser, los límites, cuándo escala | `bbo_bot/persona.py` |
 | Qué responde a una pregunta concreta | `canon.md` |
 | Las reglas del grupo | `reglas.md` |
 | Los textos fundacionales | `corpus/` (vía `scripts/sync-corpus.sh`) |
