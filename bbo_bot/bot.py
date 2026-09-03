@@ -20,13 +20,14 @@ from telegram.constants import ChatAction, ParseMode
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
+    ChatMemberHandler,
     CommandHandler,
     ContextTypes,
     MessageHandler,
     filters,
 )
 
-from . import mempool, meetup, rose
+from . import alertas, mempool, meetup, rose
 from .budget import Presupuesto
 from .claude import Voz
 from .config import Config
@@ -177,9 +178,22 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     await ctx.bot.send_chat_action(chat.id, ChatAction.TYPING)
     r = await voz.responder(msg.text or "")
 
+    if not presupuesto.hay_saldo():
+        await alertas.avisar(
+            ctx, cfg.owner_id, "presupuesto",
+            f"presupuesto diario agotado ({presupuesto.gastado} tokens). "
+            "El Q&A queda desactivado hasta mañana.",
+        )
+
     texto = r.texto
     for esc in r.escalados:
         if not await _avisar_admins(ctx, cfg, esc, chat, msg, user):
+            await alertas.avisar(
+                ctx, cfg.owner_id, "escalado-perdido",
+                f"NO llegó un escalado al log de admins ({esc.motivo}). "
+                f"Revisá BBO_ADMIN_CHAT_ID.\n{_link(chat.id, msg.message_id)}",
+                siempre=True,
+            )
             texto += (
                 "\n\n⚠️ No he podido avisar a los admins por un problema mío. "
                 "Escribile a uno directamente, no lo dejes acá."
@@ -216,6 +230,30 @@ async def _guino_rose(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     frase = rose.guino(ctx.bot_data.get("rose_activo", True))
     if frase:
         await msg.reply_text(frase)
+
+
+async def on_cambio_de_chat(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Si la añaden a un chat desconocido: avisa y se va sola."""
+    cfg: Config = ctx.bot_data["cfg"]
+    mi = update.my_chat_member
+    if not mi or mi.new_chat_member.status not in {"member", "administrator"}:
+        return
+    chat = mi.chat
+    if chat.id in cfg.known_chats:
+        log.info("añadida a un chat conocido: %s (%s)", chat.title, chat.id)
+        return
+
+    quien = mi.from_user.username or mi.from_user.id
+    await alertas.avisar(
+        ctx, cfg.owner_id, f"chat-desconocido-{chat.id}",
+        f"me añadió @{quien} a un chat que no está en la config: "
+        f"{chat.title!r} ({chat.id}). Me salgo.",
+        siempre=True,
+    )
+    try:
+        await ctx.bot.leave_chat(chat.id)
+    except Exception:  # noqa: BLE001
+        log.exception("no pude salir del chat %s", chat.id)
 
 
 # --- meetup: borrador para los admins, publica un humano ------------------
@@ -286,6 +324,7 @@ def arrancar() -> None:
     app.add_handler(CommandHandler("reglas", cmd_reglas))
     app.add_handler(CommandHandler("chatid", cmd_chatid))
     app.add_handler(CallbackQueryHandler(on_boton))
+    app.add_handler(ChatMemberHandler(on_cambio_de_chat, ChatMemberHandler.MY_CHAT_MEMBER))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
 
     if app.job_queue:
@@ -313,3 +352,12 @@ async def _comprobar_admins(app: Application) -> None:
             "Los escalados no llegarán: añadí el bot al chat y comprobá el id con /chatid.",
             cfg.admin_chat_id, e,
         )
+        if cfg.owner_id:
+            try:
+                await app.bot.send_message(
+                    cfg.owner_id,
+                    f"🤖 Roser · arranqué, pero NO llego al chat de admins "
+                    f"({cfg.admin_chat_id}): {e}. Los escalados no van a llegar.",
+                )
+            except Exception:  # noqa: BLE001
+                log.exception("tampoco se pudo alertar al dueño")

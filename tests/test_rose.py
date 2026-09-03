@@ -17,3 +17,13 @@ def test_no_responde_dos_veces_seguidas(monkeypatch):
     monkeypatch.setattr(rose.random, "random", lambda: 0.0)  # siempre pasa el dado
     assert rose.guino() is not None
     assert rose.guino() is None
+
+
+def test_alertas_tienen_freno():
+    """Un bot que spamea cuando algo se rompe se silencia, y deja de servir."""
+    import bbo_bot.alertas as alertas
+
+    alertas._ultima.clear()
+    assert alertas._pasa_el_freno("x")
+    assert not alertas._pasa_el_freno("x")
+    assert alertas._pasa_el_freno("otra-clave")
