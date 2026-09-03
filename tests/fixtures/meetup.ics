@@ -1,0 +1,97 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Meetup//Meetup Calendar 1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+NAME:Bitcoin Barcelona (BBO)
+X-WR-CALNAME:Bitcoin Barcelona (BBO)
+BEGIN:VTIMEZONE
+TZID:Europe/Madrid
+TZURL:http://tzurl.org/zoneinfo-outlook/Europe/Madrid
+X-LIC-LOCATION:Europe/Madrid
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:event_315960296@meetup.com
+SEQUENCE:1
+DTSTAMP:20260903T222718Z
+DTSTART;TZID=Europe/Madrid:20260923T180000
+DTEND;TZID=Europe/Madrid:20260923T210000
+SUMMARY:Taller práctico – SeedSigner [4ª edición]
+DESCRIPTION:Bitcoin Barcelona (BBO)\nConstruye\, configura y llévate tu p
+ ropio SeedSigner\n\nUn taller práctico para aprender a proteger tus bitco
+ in con un dispositivo air-gapped y completamente offline.\n\nDurante el ta
+ ller:\n🔧 Montarás tu SeedSigner desde cero.\n📱 Lo configurarás con
+  Sparrow Wallet mediante códigos QR.\n✍️ Aprenderás a crear y firmar
+  transacciones de forma segura.\n🧪 Practicarás en la Signet de BBO\, s
+ in utilizar bitcoin reales.\n\nLa reserva incluye el SeedSigner completo\,
+  toda la formación y acceso al grupo privado de Telegram para resolver fu
+ turas dudas.\n\nNo necesitas experiencia previa.\n\n📅 Miércoles\, 23 d
+ e Septiembre\n🕕 18:00–20:30\n📍 MOB · C/ Bailèn 11\, bajos · Bar
+ celona\n🎟 Plazas muy limitadas\n\n**El registro en la página del meetu
+ p no es suficiente. Reserva tu plaza en este enlace:**\n\nhttps://btcpay.k
+ ilombino.com/apps/baq95ZwtVQwPbCbfE3wuq5pZbjG/pos
+URL;VALUE=URI:https://www.meetup.com/bitcoin-barcelona/events/315960296/
+STATUS:CONFIRMED
+CREATED:20260803T135548Z
+LAST-MODIFIED:20260803T135548Z
+CLASS:PUBLIC
+END:VEVENT
+BEGIN:VEVENT
+UID:event_316349670@meetup.com
+SEQUENCE:1
+DTSTAMP:20260903T222718Z
+DTSTART;TZID=Europe/Madrid:20260924T190000
+DTEND;TZID=Europe/Madrid:20260924T210000
+SUMMARY:Què és això de Bitcoin? Introducció per a novells amb Jan Mart
+ ínez
+DESCRIPTION:Bitcoin Barcelona (BBO)\nCom segurament ja sabeu\, hem deixat 
+ enrere un juliol i agost molt moguts a l'ecosistema bitcoiner. Hem viscut 
+ intensament diverses crisis i reptes tècnics dels quals anirem debatent a
+ l llarg de l'any.\n\nPerò per obrir la temporada\, arrenquem amb un forma
+ t que ens demaneu sovint i que sempre ens fa il·lusió recuperar: **Bitco
+ in per a principiants**.\n\nQuè és exactament això de Bitcoin? Per desg
+ ranar el tema des de zero i respondre totes les vostres preguntes\, compta
+ rem amb en Jan Martínez\, estudiant de la UAB i expert en la matèria.\nD
+ etalls de la trobada:\n\n* Data: Dijous\, 24 de setembre de 2026 a les 19h
+  (sigueu puntuals)\n* Lloc: MOB Barcelona\, carrer Bailèn\, 11\n* Nivell:
+  Principiant (cap dubte és massa bàsic)\n* Idioma: Català\n\nVolem deix
+ ar clar que en aquest meetup no tractem temes relacionats amb l'especulaci
+ ó o la valoració de Bitcoin al mercat. No parlarem sobre valoracions eco
+ nòmiques futures d'aquesta o d'altres monedes digitals.\n\nL'assistència
+  a aquest acte és lliure i gratuïta. Us demanem que us registreu en aque
+ sta pàgina per tenir una previsió de la gent que hi assistirà. No cal q
+ ue utilitzeu informació real\, amb un pseudònim i un correu temporal n'h
+ i ha prou.\n\n📅 Data i hora: Dijous 24 de setembre de 2026 a les 19:00h
+ . L'accés es tanca a les 19:15!\n\n📍 Lloc: MOB Barcelona - Carrer Bail
+ èn\, 11\, L'Eixample\, 08010 Barcelona. Espereu al portal del local i us 
+ acompanyarem a l'interior.\n[https://www.openstreetmap.org/node/4210487190
+ ](https://www.openstreetmap.org/node/4210487190) // [https://maps.app.goo.
+ gl/AhEkEz5mix3vs5pe9](https://maps.app.goo.gl/AhEkEz5mix3vs5pe9)\n\n🌐 L
+ a nostra web: [https://bitcoinbarcelona.xyz/](https://bitcoinbarcelona.xyz
+ /) BBO és membre fundador de: [https://bitcoin.barcelona](https://bitcoin
+ .barcelona)\n\nSi voleu aportar a la comunitat\, ens podeu fer una donaci
+ ó a través de: Bitcoin On-chain ⛓ // Lightning: [https://bitcoinbarcel
+ ona.xyz/donations.html](https://bitcoinbarcelona.xyz/donations.html)
+URL;VALUE=URI:https://www.meetup.com/bitcoin-barcelona/events/316349670/
+STATUS:CONFIRMED
+CREATED:20260831T065111Z
+LAST-MODIFIED:20260831T065111Z
+CLASS:PUBLIC
+END:VEVENT
+X-ORIGINAL-URL:https://www.meetup.com/bitcoin-barcelona/events/ical/
+X-WR-CALNAME:Bitcoin Barcelona (BBO)
+END:VCALENDAR

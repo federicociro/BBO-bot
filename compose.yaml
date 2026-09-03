@@ -1,0 +1,23 @@
+---
+name: bbo-bot
+
+services:
+  bbo-bot:
+    build: .
+    container_name: bbo-bot
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Europe/Madrid}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?falta la key}
+      BBO_TELEGRAM_TOKEN: ${BBO_TELEGRAM_TOKEN:?falta el token}
+      BBO_MAIN_CHAT_ID: ${BBO_MAIN_CHAT_ID}
+      BBO_ADMIN_CHAT_ID: ${BBO_ADMIN_CHAT_ID}
+      BBO_CHANNEL_ID: ${BBO_CHANNEL_ID}
+      BBO_DM_ALLOWLIST: ${BBO_DM_ALLOWLIST:-}
+      BBO_MODEL: ${BBO_MODEL:-claude-opus-5}
+      BBO_EFFORT: ${BBO_EFFORT:-medium}
+      BBO_MEMPOOL_URL: ${BBO_MEMPOOL_URL}
+      BBO_MEETUP_GROUP: ${BBO_MEETUP_GROUP:-bitcoin-barcelona}
+      BBO_FIAT: ${BBO_FIAT:-EUR}
+      BBO_COOLDOWN_S: ${BBO_COOLDOWN_S:-15}
+      BBO_DAILY_TOKEN_BUDGET: ${BBO_DAILY_TOKEN_BUDGET:-500000}
