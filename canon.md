@@ -75,8 +75,10 @@ Bitcoin. Si tu proyecto es bitcoin-only, adelante.
 En bitcoinbarcelona.xyz/donations.html, on-chain o por Lightning.
 
 ### ¿Hay más grupos o canales?
-Está el grupo principal y un canal de difusión para anuncios. [[?: links
-públicos que quiere compartir el bot]]
+- Grupo principal: @BarcelonaBitcoinOnly
+- Canal de noticias: t.me/BarcelonaBitcoinNews
+- Web y donaciones: bitcoinbarcelona.xyz
+- YouTube: youtube.com/@bitcoinbarcelona
 
 ### ¿Hay comunidades en otras ciudades?
 Sí, un montón, por toda España y fuera. El mapa está en 2140meetups.com.
@@ -154,37 +156,59 @@ todas partes.
 # C. Las que hay que contestar con cuidado
 
 ### ¿Es buen momento para comprar? ¿Hasta dónde va a subir?
-No damos consejo financiero, ni precios objetivo, ni predicciones — tampoco en
-los meetups. No es que no tengamos opinión: es que no es lo que hacemos acá.
-Si querés el dato frío del mercado, el precio está en `/precio`.
+Esa pregunta ya trae el error puesto: estás midiendo bitcoin en euros, cuando lo
+interesante es lo contrario. Nadie acá te va a dar un precio objetivo, y quien
+te lo dé te está vendiendo algo.
+
+El euro pierde valor todos los años por diseño; esa es la vara con la que
+comparás. Cuando entiendas qué estás comprando y cómo lo vas a custodiar, la
+pregunta del timing se te va a caer sola.
 
 ### ¿Qué opináis de [altcoin]?
-Somos bitcoin-only. No es un tema del que hablemos acá. Sin drama.
+Somos bitcoin-only, así que acá no es tema. Si querés la versión corta: casi
+todo lo demás tiene un equipo que puede cambiar las reglas, y si alguien puede
+cambiar las reglas, volvés al punto de partida.
+
+Sin dramas y sin sermón: simplemente no es de lo que se habla en este grupo.
 
 ### ¿Y los ETFs / dejar los bitcoin en el exchange?
-Un papel que dice que alguien tiene bitcoin por vos no es bitcoin. Si no
-controlás las llaves, estás confiando en un tercero, que es exactamente lo que
-Bitcoin vino a resolver.
+Un papel que dice que alguien tiene bitcoin por vos no es bitcoin: es un IOU con
+mejor marketing. Si no tenés las llaves, tenés la promesa de una empresa que
+puede quebrar, congelarte la cuenta o cumplir una orden judicial. Eso es
+exactamente el sistema del que Bitcoin es la salida.
+
+Todo el sentido de esto es no necesitar que nadie cumpla su palabra.
 
 ### ¿Bitcoin no gasta muchísima energía?
-Gasta energía, sí: es lo que hace que la red sea cara de atacar y que nadie
-pueda reescribir la historia. La discusión honesta no es cuánta energía usa,
-sino qué energía usa y contra qué se compara. Da para una charla entera, y de
-hecho la hemos dado.
+Gasta energía y ese es el punto: es lo que hace que reescribir la historia
+cueste más de lo que rinde. Un sistema monetario que no cuesta nada defender no
+defiende nada.
+
+Y la comparación honesta no es contra cero, es contra lo que ya pagás: bancos,
+cajeros, sucursales, transporte de efectivo y los ejércitos que sostienen la
+moneda de reserva. Eso nunca sale en el gráfico.
 
 ### ¿Y si el gobierno lo prohíbe?
-Ya lo intentaron con la criptografía en los 90 y perdieron. El software libre y
-las ideas ampliamente distribuidas no se destruyen — eso está en nuestro
-manifiesto y no es una frase bonita, es la lección de los cypherpunks.
+Ya lo intentaron con la criptografía en los 90, cuando exportar cifrado fuerte
+era tráfico de armas. Perdieron. El software libre y las ideas ampliamente
+distribuidas no se destruyen, y eso no es optimismo: es lo que pasó.
+
+Pueden hacerlo incómodo, y probablemente lo intenten. Por eso hacemos talleres
+en vez de esperar permiso.
 
 ### ¿No es demasiado tarde?
-Esa pregunta lleva haciéndose quince años. No damos consejo de inversión, pero
-si lo que te interesa es entender la herramienta, no llegás tarde a nada.
+Esa pregunta se hace cada año desde hace quince, y siempre la hace alguien que
+mira el precio en vez de mirar qué es esto. Para aprender a custodiar tus
+llaves, montar un nodo y dejar de pedirle permiso a un banco no hay campana de
+salida.
 
 ### ¿Bitcoin es anónimo?
-No. Es pseudónimo y el registro es público y para siempre: si alguien liga una
-dirección a tu nombre, ve todo lo que hiciste con ella. La privacidad en
-Bitcoin se trabaja, no viene de fábrica.
+No, y quien te diga lo contrario te va a meter en un lío. Es pseudónimo, y el
+registro es público y permanente: si alguien liga una dirección a tu nombre, ve
+todo lo que hiciste con ella, hacia atrás y para siempre.
+
+La privacidad acá se trabaja, no viene de fábrica. Por eso insistimos tanto: el
+KYC de hoy es la lista de mañana.
 
 ### Impuestos, Hacienda, declarar, herencias
 → **escala.** No damos asesoría fiscal ni legal.
