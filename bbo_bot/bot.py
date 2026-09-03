@@ -210,13 +210,33 @@ async def _avisar_admins(ctx, cfg: Config, esc, chat, msg, user) -> bool:
         f"De: {quien} · en {chat.title or chat.id}\n"
         f"{_link(chat.id, msg.message_id)}"
     )
-    try:
-        await ctx.bot.send_message(cfg.admin_chat_id, aviso, parse_mode=ParseMode.MARKDOWN)
-        return True
-    except Exception:  # noqa: BLE001
+
+    # Urgente primero: esto tiene que llegar a alguien que lo lea hoy.
+    entregado = False
+    if cfg.escalation_chat_id:
+        try:
+            await ctx.bot.send_message(
+                cfg.escalation_chat_id, aviso, parse_mode=ParseMode.MARKDOWN
+            )
+            entregado = True
+        except Exception:  # noqa: BLE001
+            log.exception("no llegó el escalado urgente a %s", cfg.escalation_chat_id)
+
+    # Copia al log de admins, que se lee semanalmente: es el registro, no el aviso.
+    if cfg.admin_chat_id and cfg.admin_chat_id != cfg.escalation_chat_id:
+        try:
+            await ctx.bot.send_message(
+                cfg.admin_chat_id, aviso, parse_mode=ParseMode.MARKDOWN,
+                disable_notification=True,
+            )
+            entregado = entregado or not cfg.escalation_chat_id
+        except Exception:  # noqa: BLE001
+            log.exception("no llegó la copia al log de admins")
+
+    if not entregado:
         # Nunca en silencio: al log, y la persona se entera en la misma respuesta.
-        log.exception("NO SE PUDO AVISAR A LOS ADMINS: %s / %s", esc.motivo, esc.resumen)
-        return False
+        log.error("ESCALADO NO ENTREGADO: %s / %s", esc.motivo, esc.resumen)
+    return entregado
 
 
 async def _guino_rose(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
@@ -343,21 +363,22 @@ def arrancar() -> None:
 async def _comprobar_admins(app: Application) -> None:
     """Al arrancar: ¿llegamos al chat de admins? Si no, que se vea."""
     cfg: Config = app.bot_data["cfg"]
+    destino = cfg.escalation_chat_id or cfg.admin_chat_id
     try:
-        chat = await app.bot.get_chat(cfg.admin_chat_id)
-        log.info("chat de admins OK: %s (%s)", chat.title, chat.id)
+        chat = await app.bot.get_chat(destino)
+        log.info("destino de escalados OK: %s (%s)", chat.title or chat.first_name, chat.id)
     except Exception as e:  # noqa: BLE001
         log.error(
-            "NO SE LLEGA AL CHAT DE ADMINS %s (%s). "
-            "Los escalados no llegarán: añadí el bot al chat y comprobá el id con /chatid.",
-            cfg.admin_chat_id, e,
+            "NO SE LLEGA AL DESTINO DE ESCALADOS %s (%s). "
+            "Añadí la bot al chat, o escribile por privado, y comprobá el id con /chatid.",
+            destino, e,
         )
         if cfg.owner_id:
             try:
                 await app.bot.send_message(
                     cfg.owner_id,
-                    f"🤖 Roser · arranqué, pero NO llego al chat de admins "
-                    f"({cfg.admin_chat_id}): {e}. Los escalados no van a llegar.",
+                    f"🤖 Roser · arranqué, pero NO llego al destino de escalados "
+                    f"({destino}): {e}. Los escalados no van a llegar.",
                 )
             except Exception:  # noqa: BLE001
                 log.exception("tampoco se pudo alertar al dueño")

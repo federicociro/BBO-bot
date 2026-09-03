@@ -29,6 +29,7 @@ class Config:
     dm_allowlist: frozenset[int]
     dm_abierto: bool
     owner_id: int
+    escalation_chat_id: int
 
     model: str
     effort: str
@@ -54,6 +55,13 @@ class Config:
             dm_allowlist=_ids(os.environ.get("BBO_DM_ALLOWLIST")),
             dm_abierto=os.environ.get("BBO_DM_OPEN", "").strip() in {"1", "true", "yes"},
             owner_id=int(os.environ.get("BBO_OWNER_ID") or 0),
+            # Los escalados urgentes van donde se lean YA. Si no hay un chat
+            # dedicado, al privado del dueño; el log de admins recibe copia.
+            escalation_chat_id=int(
+                os.environ.get("BBO_ESCALATION_CHAT_ID")
+                or os.environ.get("BBO_OWNER_ID")
+                or 0
+            ),
             model=os.environ.get("BBO_MODEL", "claude-opus-5"),
             effort=os.environ.get("BBO_EFFORT", "medium"),
             mempool_url=os.environ.get("BBO_MEMPOOL_URL", "").rstrip("/"),
