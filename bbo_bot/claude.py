@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from dataclasses import dataclass
 
 import anthropic
@@ -32,11 +33,23 @@ class Respuesta:
     cache_leida: int = 0
 
 
+SIN_KEY = (
+    "Estoy en modo QA sin modelo: los comandos funcionan, pero el Q&A no. "
+    "Falta ANTHROPIC_API_KEY."
+)
+
+
 class Voz:
     def __init__(self, cfg: Config, presupuesto: Presupuesto) -> None:
         self.cfg = cfg
         self.presupuesto = presupuesto
-        self.client = anthropic.Anthropic()
+        # El SDK no valida credenciales al construir el cliente, sino al hacer
+        # el request: hay que mirar el entorno para saberlo al arrancar.
+        if not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")):
+            self.client = None
+            log.warning("sin credenciales de Anthropic: el Q&A queda desactivado")
+        else:
+            self.client = anthropic.Anthropic()
         # Se arma una vez: el prefijo tiene que ser idéntico en cada request.
         self._system = [
             {"type": "text", "text": PERSONA},
@@ -76,7 +89,13 @@ class Voz:
 
         return Respuesta(texto.strip(), caja.escalados, tokens, cache_leida)
 
+    @property
+    def activa(self) -> bool:
+        return self.client is not None
+
     async def responder(self, pregunta: str) -> Respuesta:
+        if self.client is None:
+            return Respuesta(SIN_KEY, [])
         if not self.presupuesto.hay_saldo():
             return Respuesta(
                 "Se agotó el presupuesto del día. Mañana sigo; "

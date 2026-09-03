@@ -64,12 +64,12 @@ monedas digitales. Es una decisión de la comunidad, no un descuido.
 En los meetups en MOB el acceso se cierra a los 15 minutos. Sé puntual.
 
 ### ¿Puedo dar una charla / proponer un tema?
-Sí, nos interesa. [[?: a quién se escribe para proponer charla]]
+Sí, nos interesa. Escribile a cualquiera de los admins del grupo.
 
 ### ¿Puedo promocionar mi proyecto / empresa / servicio aquí?
-La regla 2 lo dice: no se promocionan ni se comparten enlaces de exchanges ni
-de servicios que no tengan que ver directamente con Bitcoin. Si tu proyecto es
-bitcoin-only, hablalo antes con los admins.
+Mientras respete las reglas del grupo, sí. La regla 2 es la que manda: nada de
+promocionar exchanges ni servicios que no tengan que ver directamente con
+Bitcoin. Si tu proyecto es bitcoin-only, adelante.
 
 ### ¿Cómo puedo aportar / donar?
 En bitcoinbarcelona.xyz/donations.html, on-chain o por Lightning.
@@ -79,8 +79,7 @@ Está el grupo principal y un canal de difusión para anuncios. [[?: links
 públicos que quiere compartir el bot]]
 
 ### ¿Hay comunidades en otras ciudades?
-Sí, hay comunidades bitcoin-only por toda España y fuera. [[?: a cuáles
-queréis apuntar]]
+Sí, un montón, por toda España y fuera. El mapa está en 2140meetups.com.
 
 ---
 
@@ -99,13 +98,17 @@ entender → custodiar bien → después ya veremos.
 Los criterios, que son lo que importa: código abierto y verificable,
 bitcoin-only, y que la seed sea estándar para poder recuperarla en otra wallet
 si la empresa desaparece. Una wallet de la que no puedas salir no es tuya.
-[[?: la lista concreta que recomendamos]]
+
+Lo que usamos: **Sparrow** en ordenador, **BlueWallet** o **Nunchuk** en el
+móvil.
 
 ### ¿Qué hardware wallet compro?
 Mismo criterio: abierta, auditable, y que puedas verificar el firmware. En los
 talleres montamos **SeedSigner** — te lo construís vos, es air-gapped y
 completamente offline — y lo usamos con **Sparrow Wallet** por códigos QR.
-[[?: otras que recomendéis]]
+
+Además de SeedSigner: **BitBox**, **Jade** y **Passport**. **Coldcard no**, y
+**Trezor preferiblemente tampoco**. **Ledger, definitivamente no.**
 
 ### ¿Qué es la seed y dónde la guardo?
 Son las 12 o 24 palabras que **son** tus bitcoin: quien las tenga, los tiene.
@@ -128,8 +131,8 @@ exchanges con KYC, que es lo cómodo y lo que te deja el rastro completo, y hay
 P2P, que es más trabajo y te devuelve la privacidad. En el grupo se permite la
 compraventa entre miembros, pero **lo recomendado es hacerla en persona en los
 meetups**, y siempre bajo tu propia responsabilidad: el grupo no se hace
-responsable de las transacciones (regla 4). [[?: opciones concretas que
-recomendamos]]
+responsable de las transacciones (regla 4). Lo que usa la gente de acá:
+comprar en persona en el meetup, **RoboSats**, **Bisq** y **Hodl Hodl**.
 Si la pregunta es fiscal o legal → **escala**.
 
 ### ¿Cómo verifico lo que me descargo?
@@ -138,10 +141,13 @@ alguien que confía de alguien que verifica, y se enseña en los talleres.
 
 ### ¿Puedo practicar sin arriesgar dinero?
 Sí. Tenemos una **signet propia de BBO** para practicar con transacciones
-reales sin bitcoin reales. Es lo que usamos en los talleres.
+reales sin bitcoin reales. Es lo que usamos en los talleres: el faucet está en
+faucet.bitcoinbarcelona.xyz y el entorno en
+github.com/BcnBitcoinOnly/signet-playground.
 
 ### ¿Dónde puedo pagar con bitcoin en Barcelona?
-[[?: mapa/lista que queráis enlazar — btcmap, comercios de la zona]]
+En BTCMap está el mapa de comercios que aceptan bitcoin, en Barcelona y en
+todas partes.
 
 ---
 

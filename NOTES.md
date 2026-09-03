@@ -41,7 +41,7 @@ curl .../getMe               # @BBO_8333_bot, privacy mode ON
 
 ### Verificado contra servicios reales
 
-- `https://mempool.federicociro.com/api` responde precio, fees y altura.
+- La instancia propia de mempool responde precio, fees y altura.
 - Feed iCal de `bitcoin-barcelona`: da `DTSTART` con TZID, `SUMMARY`, `URL`.
 - Token de Telegram válido.
 

@@ -8,7 +8,8 @@ from pathlib import Path
 
 def _cargar_env() -> None:
     """.env sin dependencias: son ocho variables, no hace falta una librería."""
-    env = Path(__file__).resolve().parent.parent / ".env"
+    env = Path(os.environ.get("BBO_ENV_FILE") or
+               Path(__file__).resolve().parent.parent / ".env")
     if not env.exists():
         return
     for linea in env.read_text(encoding="utf-8").splitlines():

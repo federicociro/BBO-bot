@@ -27,6 +27,7 @@ class Config:
     admin_chat_id: int
     channel_id: int
     dm_allowlist: frozenset[int]
+    dm_abierto: bool
 
     model: str
     effort: str
@@ -50,11 +51,10 @@ class Config:
             admin_chat_id=int(_req("BBO_ADMIN_CHAT_ID")),
             channel_id=int(os.environ.get("BBO_CHANNEL_ID") or 0),
             dm_allowlist=_ids(os.environ.get("BBO_DM_ALLOWLIST")),
+            dm_abierto=os.environ.get("BBO_DM_OPEN", "").strip() in {"1", "true", "yes"},
             model=os.environ.get("BBO_MODEL", "claude-opus-5"),
             effort=os.environ.get("BBO_EFFORT", "medium"),
-            mempool_url=os.environ.get(
-                "BBO_MEMPOOL_URL", "https://mempool.federicociro.com/api"
-            ).rstrip("/"),
+            mempool_url=os.environ.get("BBO_MEMPOOL_URL", "").rstrip("/"),
             meetup_group=os.environ.get("BBO_MEETUP_GROUP", "bitcoin-barcelona"),
             fiat=os.environ.get("BBO_FIAT", "EUR").upper(),
             cooldown_s=int(os.environ.get("BBO_COOLDOWN_S", "15")),

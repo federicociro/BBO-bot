@@ -121,6 +121,14 @@ async def cmd_reglas(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     await _responder_largo(update, cuerpo.strip())
 
 
+async def cmd_chatid(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """El id que hay que poner en el .env, dicho por el propio bot."""
+    chat = update.effective_chat
+    await update.effective_message.reply_text(
+        f"chat_id: {chat.id}\ntipo: {chat.type}\ntu user_id: {update.effective_user.id}"
+    )
+
+
 # --- texto libre ----------------------------------------------------------
 
 
@@ -145,7 +153,7 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         return
 
     if chat.type == chat.PRIVATE:
-        if user.id not in cfg.dm_allowlist:
+        if not cfg.dm_abierto and user.id not in cfg.dm_allowlist:
             await msg.reply_text(
                 "Por privado solo hablo con los admins. Preguntame en el grupo — "
                 "y ojo: nadie de BBO te escribe primero por privado."
@@ -167,13 +175,18 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     await ctx.bot.send_chat_action(chat.id, ChatAction.TYPING)
     r = await voz.responder(msg.text or "")
 
+    texto = r.texto
     for esc in r.escalados:
-        await _avisar_admins(ctx, cfg, esc, chat, msg, user)
+        if not await _avisar_admins(ctx, cfg, esc, chat, msg, user):
+            texto += (
+                "\n\n⚠️ No he podido avisar a los admins por un problema mío. "
+                "Escribile a uno directamente, no lo dejes acá."
+            )
 
-    await _responder_largo(update, r.texto)
+    await _responder_largo(update, texto)
 
 
-async def _avisar_admins(ctx, cfg: Config, esc, chat, msg, user) -> None:
+async def _avisar_admins(ctx, cfg: Config, esc, chat, msg, user) -> bool:
     quien = f"@{user.username}" if user.username else f"id {user.id}"
     aviso = (
         f"⚠️ *Escalado* — {esc.motivo}\n\n"
@@ -183,9 +196,11 @@ async def _avisar_admins(ctx, cfg: Config, esc, chat, msg, user) -> None:
     )
     try:
         await ctx.bot.send_message(cfg.admin_chat_id, aviso, parse_mode=ParseMode.MARKDOWN)
+        return True
     except Exception:  # noqa: BLE001
-        # Si esto falla, el escalado se pierde: que quede en el log sí o sí.
+        # Nunca en silencio: al log, y la persona se entera en la misma respuesta.
         log.exception("NO SE PUDO AVISAR A LOS ADMINS: %s / %s", esc.motivo, esc.resumen)
+        return False
 
 
 async def _guino_rose(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
@@ -267,11 +282,32 @@ def arrancar() -> None:
     app.add_handler(CommandHandler("manifiesto", cmd_manifiesto))
     app.add_handler(CommandHandler("cita", cmd_cita))
     app.add_handler(CommandHandler("reglas", cmd_reglas))
+    app.add_handler(CommandHandler("chatid", cmd_chatid))
     app.add_handler(CallbackQueryHandler(on_boton))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
 
     if app.job_queue:
         app.job_queue.run_daily(job_meetup, time=dtime(hour=18, minute=0))
 
+    if cfg.dm_abierto:
+        log.warning("BBO_DM_OPEN activo: el privado está abierto a cualquiera (solo QA)")
+    if not app.bot_data["voz"].activa:
+        log.warning("modo QA sin modelo: solo comandos")
+    app.post_init = _comprobar_admins
+
     log.info("BBO bot en marcha (modelo=%s, effort=%s)", cfg.model, cfg.effort)
     app.run_polling(allowed_updates=Update.ALL_TYPES)
+
+
+async def _comprobar_admins(app: Application) -> None:
+    """Al arrancar: ¿llegamos al chat de admins? Si no, que se vea."""
+    cfg: Config = app.bot_data["cfg"]
+    try:
+        chat = await app.bot.get_chat(cfg.admin_chat_id)
+        log.info("chat de admins OK: %s (%s)", chat.title, chat.id)
+    except Exception as e:  # noqa: BLE001
+        log.error(
+            "NO SE LLEGA AL CHAT DE ADMINS %s (%s). "
+            "Los escalados no llegarán: añadí el bot al chat y comprobá el id con /chatid.",
+            cfg.admin_chat_id, e,
+        )
