@@ -47,8 +47,7 @@ class Respuesta:
 
 
 SIN_KEY = (
-    "Estoy en modo QA sin modelo: los comandos funcionan, pero el Q&A no. "
-    "Falta ANTHROPIC_API_KEY."
+    "Estoy en modo QA sin modelo: los comandos funcionan, pero el Q&A no. Falta ANTHROPIC_API_KEY."
 )
 
 
@@ -110,7 +109,9 @@ class Voz:
                 log.warning("refusal: %s", getattr(mensaje, "stop_details", None))
                 return Respuesta(
                     "Eso no lo puedo contestar. Si hace falta, lo ve un admin.",
-                    caja.escalados, tokens, cache_leida,
+                    caja.escalados,
+                    tokens,
+                    cache_leida,
                 )
             texto = "".join(b.text for b in mensaje.content if b.type == "text") or texto
 
@@ -122,8 +123,7 @@ class Voz:
                     motivo="aviso forzado",
                     resumen=(
                         "Roser le dijo a la persona que un humano lo miraría, pero no "
-                        "llamó a escalar. Se avisa igual por si acaso. Pregunta: "
-                        + pregunta[:300]
+                        "llamó a escalar. Se avisa igual por si acaso. Pregunta: " + pregunta[:300]
                     ),
                 )
             )

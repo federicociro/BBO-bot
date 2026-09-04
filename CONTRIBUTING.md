@@ -8,12 +8,12 @@ nos piden a nosotros que llevemos la comunicación de la comunidad.
 
 | Querés cambiar | Editás |
 |---|---|
-| Qué responde a una pregunta concreta | `canon.md` |
+| Qué responde a una pregunta concreta | `content/canon.md` |
 | Su carácter, sus límites, cuándo pasa a un admin | `bbo_bot/persona.py` |
-| Las reglas del grupo (texto oficial, verbatim) | `reglas.md` |
-| Los textos fundacionales | `corpus/` |
+| Las reglas del grupo (texto oficial, verbatim) | `content/reglas.md` |
+| Los textos fundacionales | `content/corpus/` |
 
-Los tres primeros van dentro del prompt cacheado. Cambiarlos invalida la caché:
+Todo `content/` va dentro del prompt cacheado. Cambiarlos invalida la caché:
 la siguiente pregunta paga la escritura, las de después vuelven a leerla. Es
 barato, pero no es gratis — no los toques por cosmética.
 
@@ -40,16 +40,19 @@ La respuesta en la voz de Roser: directa, 2-4 frases, con posición.
 
 ```bash
 uv sync --extra dev
-uv run pytest                              # rápido, sin red
-uv run python scripts/repaso.py            # 40 preguntas contra la API real
+uv run pytest                    # rápido, sin red
+uvx ruff check . && uvx ruff format --check .
+uv run python scripts/repaso.py  # 40 preguntas contra la API real
 ```
+
+CI corre `ruff` y `pytest` en cada PR.
 
 `scripts/repaso.py` **gasta dinero de verdad** (~1 $ por pasada). No lo metas
 en CI.
 
 Conventional Commits con scope. Antes de tocar la lógica de coste
 (`budget.py`, el agrupado de mensajes en `bot.py`) leé el incidente de los dos
-euros en `NOTES.md`: la concurrencia rompe la economía de la caché y no se ve
+euros en `docs/NOTES.md`: la concurrencia rompe la economía de la caché y no se ve
 venir.
 
 **Nunca commitees secrets.** `.env` y `.env.qa` están ignorados y hay gitleaks

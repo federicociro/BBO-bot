@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 from anthropic import beta_tool
 
-from . import mempool, meetup
+from . import meetup, mempool
 from .config import Config
 
 
@@ -61,7 +61,7 @@ def construir(cfg: Config, caja: Caja) -> list:
         """Próximo meetup de BBO: título, fecha, hora y enlace."""
         try:
             ev = meetup.proximo(cfg.meetup_group)
-        except Exception:  # noqa: BLE001 - feed de terceros
+        except Exception:
             return "No se pudo consultar la agenda de meetups ahora mismo."
         if ev is None:
             return "No hay ningún meetup publicado todavía."

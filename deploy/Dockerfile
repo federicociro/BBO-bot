@@ -11,9 +11,9 @@ RUN pip install --no-cache-dir . && rm -rf /root/.cache
 
 COPY bbo_bot/ ./bbo_bot/
 
-# El material NO se hornea en la imagen: se monta el checkout de git, para que
-# editar el canon en GitHub llegue a Roser sin reconstruir nada.
-VOLUME ["/app/corpus", "/app/canon.md", "/app/reglas.md"]
+# El material NO se hornea en la imagen: se monta content/ desde el checkout de
+# git, para que editar el canon llegue a Roser sin reconstruir nada. Ver #2.
+VOLUME ["/app/content"]
 
 USER bbo
 CMD ["python", "-m", "bbo_bot"]

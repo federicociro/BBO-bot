@@ -45,12 +45,14 @@ class Config:
     ventana_agrupado_s: float
     daily_token_budget: int
 
-    corpus_dir: Path = ROOT / "corpus"
-    canon_path: Path = ROOT / "canon.md"
-    reglas_path: Path = ROOT / "reglas.md"
+    # Todo lo que entra en el prefijo cacheado vive junto en content/:
+    # tocar cualquiera de estos invalida la caché del prompt.
+    corpus_dir: Path = ROOT / "content" / "corpus"
+    canon_path: Path = ROOT / "content" / "canon.md"
+    reglas_path: Path = ROOT / "content" / "reglas.md"
 
     @classmethod
-    def from_env(cls) -> "Config":
+    def from_env(cls) -> Config:
         return cls(
             telegram_token=_req("BBO_TELEGRAM_TOKEN"),
             main_chat_id=int(_req("BBO_MAIN_CHAT_ID")),
@@ -62,9 +64,7 @@ class Config:
             # Los escalados urgentes van donde se lean YA. Si no hay un chat
             # dedicado, al privado del dueño; el log de admins recibe copia.
             escalation_chat_id=int(
-                os.environ.get("BBO_ESCALATION_CHAT_ID")
-                or os.environ.get("BBO_OWNER_ID")
-                or 0
+                os.environ.get("BBO_ESCALATION_CHAT_ID") or os.environ.get("BBO_OWNER_ID") or 0
             ),
             git_pull=os.environ.get("BBO_GIT_PULL", "").strip() in {"1", "true", "yes"},
             auto_pull_min=int(os.environ.get("BBO_AUTO_PULL_MIN", "0")),

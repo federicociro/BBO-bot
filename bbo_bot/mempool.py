@@ -23,7 +23,7 @@ def _get(base: str, path: str):
             r = c.get(f"{base}{path}")
             r.raise_for_status()
             return r.json() if "json" in r.headers.get("content-type", "") else r.text
-    except Exception as e:  # noqa: BLE001 - el bot solo necesita saber que falló
+    except Exception as e:
         raise MempoolError(f"{path}: {e}") from e
 
 

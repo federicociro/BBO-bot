@@ -14,7 +14,9 @@ TITULOS = {
     "00-manifesto-bbo": "Manifiesto BBO (Barcelona Bitcoin Only, 2023)",
     "01-crypto-anarchist-manifesto": "The Crypto Anarchist Manifesto (Timothy C. May, 1988)",
     "02-cypherpunks-manifesto": "A Cypherpunk's Manifesto (Eric Hughes, 1993)",
-    "03-crypto-anarchy-virtual-communities": "Crypto Anarchy and Virtual Communities (Timothy C. May, 1994)",
+    "03-crypto-anarchy-virtual-communities": (
+        "Crypto Anarchy and Virtual Communities (Timothy C. May, 1994)"
+    ),
     "04-bitcoin-whitepaper": "Bitcoin: A Peer-to-Peer Electronic Cash System (Nakamoto, 2008)",
 }
 

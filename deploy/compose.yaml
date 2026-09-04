@@ -3,7 +3,11 @@ name: bbo-bot
 
 services:
   bbo-bot:
-    build: .
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    volumes:
+      - ../content:/app/content:ro
     container_name: bbo-bot
     restart: unless-stopped
     environment:
@@ -20,4 +24,10 @@ services:
       BBO_MEETUP_GROUP: ${BBO_MEETUP_GROUP:-bitcoin-barcelona}
       BBO_FIAT: ${BBO_FIAT:-EUR}
       BBO_COOLDOWN_S: ${BBO_COOLDOWN_S:-15}
+      BBO_OWNER_ID: ${BBO_OWNER_ID:-}
+      BBO_ESCALATION_CHAT_ID: ${BBO_ESCALATION_CHAT_ID:-}
+      BBO_MAX_CHARS_ENTRADA: ${BBO_MAX_CHARS_ENTRADA:-1500}
+      BBO_VENTANA_AGRUPADO_S: ${BBO_VENTANA_AGRUPADO_S:-8}
+      BBO_GIT_PULL: ${BBO_GIT_PULL:-0}
+      BBO_AUTO_PULL_MIN: ${BBO_AUTO_PULL_MIN:-0}
       BBO_DAILY_TOKEN_BUDGET: ${BBO_DAILY_TOKEN_BUDGET:-500000}

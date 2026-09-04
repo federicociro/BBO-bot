@@ -37,5 +37,5 @@ async def avisar(ctx, owner_id: int, clave: str, texto: str, *, siempre: bool = 
         return
     try:
         await ctx.bot.send_message(owner_id, f"🤖 Roser · {texto}")
-    except Exception:  # noqa: BLE001 - si ni esto sale, al log
+    except Exception:
         log.exception("no se pudo alertar al dueño: %s", texto)

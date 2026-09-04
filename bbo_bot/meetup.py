@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import httpx
@@ -19,7 +19,7 @@ TZ = ZoneInfo("Europe/Madrid")
 TIMEOUT = 10.0
 TTL = timedelta(hours=1)
 
-_cache: tuple[datetime, list["Evento"]] | None = None
+_cache: tuple[datetime, list[Evento]] | None = None
 
 
 @dataclass(frozen=True)
@@ -32,8 +32,18 @@ class Evento:
     def humano(self) -> str:
         dias = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
         meses = [
-            "enero", "febrero", "marzo", "abril", "mayo", "junio",
-            "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+            "enero",
+            "febrero",
+            "marzo",
+            "abril",
+            "mayo",
+            "junio",
+            "julio",
+            "agosto",
+            "septiembre",
+            "octubre",
+            "noviembre",
+            "diciembre",
         ]
         d = self.inicio
         return (
@@ -87,7 +97,7 @@ def _parse_rss(texto: str) -> dict[str, str]:
 def proximos(grupo: str, forzar: bool = False) -> list[Evento]:
     """Eventos futuros, ordenados. Cacheado 1 h en memoria. Bloqueante."""
     global _cache
-    ahora = datetime.now(timezone.utc)
+    ahora = datetime.now(UTC)
     if not forzar and _cache and ahora - _cache[0] < TTL:
         return _cache[1]
 

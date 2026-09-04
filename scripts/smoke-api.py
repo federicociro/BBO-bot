@@ -17,11 +17,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import anthropic  # noqa: E402
+import anthropic
 
-from bbo_bot.budget import Presupuesto  # noqa: E402
-from bbo_bot.claude import Voz  # noqa: E402
-from bbo_bot.config import Config  # noqa: E402
+from bbo_bot.budget import Presupuesto
+from bbo_bot.claude import Voz
+from bbo_bot.config import Config
 
 PREGUNTAS = [
     ("voz", "hola, acabo de entrar al grupo, ¿qué es esto?"),

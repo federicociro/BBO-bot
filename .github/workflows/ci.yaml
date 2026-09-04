@@ -1,0 +1,25 @@
+---
+name: CI
+
+# Ojo: aquí NO va scripts/repaso.py — gasta dinero real en la API en cada
+# ejecución. Eso se corre a mano antes de desplegar.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev
+      - name: ruff check
+        run: uvx ruff check --output-format=github .
+      - name: ruff format
+        run: uvx ruff format --check .
+      - name: pytest
+        run: uv run pytest -q

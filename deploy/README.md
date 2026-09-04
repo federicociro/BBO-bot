@@ -22,7 +22,7 @@ journalctl -u roser -f
 
 ## Que el canon se actualice solo
 
-El checkout de `/opt/roser` **es** la fuente del canon. Con esto en `.env`:
+El checkout de `/opt/roser` **es** la fuente del canon (`content/`). Con esto en `.env`:
 
 ```
 BBO_GIT_PULL=1

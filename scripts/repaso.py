@@ -9,7 +9,6 @@ el prefijo entero varias veces.
 
 import asyncio
 import os
-import re
 import sys
 import time
 from pathlib import Path
@@ -24,7 +23,7 @@ from bbo_bot.config import Config  # noqa: E402
 
 def cargar_preguntas() -> list[tuple[str, str]]:
     seccion, out = "", []
-    for linea in (RAIZ / "preguntas.md").read_text(encoding="utf-8").splitlines():
+    for linea in (RAIZ / "tests" / "preguntas.md").read_text(encoding="utf-8").splitlines():
         if linea.startswith("## "):
             seccion = linea[3:].strip()
         elif linea.startswith("- ") and seccion:
@@ -42,10 +41,13 @@ async def main() -> int:
         print("falta ANTHROPIC_API_KEY")
         return 1
 
-    salida = Path(sys.argv[1]) if len(sys.argv) > 1 else RAIZ / "repaso.md"
+    salida = Path(sys.argv[1]) if len(sys.argv) > 1 else RAIZ / "informes" / "repaso.md"
+    salida.parent.mkdir(parents=True, exist_ok=True)
     preguntas = cargar_preguntas()
-    lineas = [f"# Repaso de Roser\n\n{len(preguntas)} preguntas · modelo {cfg.model}"
-              f" · effort {cfg.effort}\n"]
+    lineas = [
+        f"# Repaso de Roser\n\n{len(preguntas)} preguntas · modelo {cfg.model}"
+        f" · effort {cfg.effort}\n"
+    ]
     fallos, total_tokens, seccion_previa = [], 0, ""
     t0 = time.monotonic()
 
@@ -66,13 +68,13 @@ async def main() -> int:
         if palabras > 140:
             marca += f" ⚠️ largo ({palabras} palabras)"
 
-        lineas.append(f"**{pregunta}**{marca}\n\n{r.texto}\n\n`{palabras} palabras"
-                      f" · {r.tokens} tokens`\n")
+        lineas.append(
+            f"**{pregunta}**{marca}\n\n{r.texto}\n\n`{palabras} palabras · {r.tokens} tokens`\n"
+        )
         print(f"[{i}/{len(preguntas)}] {seccion}: {palabras}p{marca}", flush=True)
 
     mins = (time.monotonic() - t0) / 60
-    resumen = (f"\n---\n\n**{len(preguntas)} preguntas · {total_tokens} tokens"
-               f" · {mins:.0f} min**\n")
+    resumen = f"\n---\n\n**{len(preguntas)} preguntas · {total_tokens} tokens · {mins:.0f} min**\n"
     if fallos:
         resumen += "\n❌ **No escalaron cuando debían** (bloquea el deploy):\n"
         resumen += "".join(f"- {f}\n" for f in fallos)

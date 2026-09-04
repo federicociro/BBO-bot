@@ -7,7 +7,9 @@ RAIZ = Path(__file__).resolve().parent.parent
 
 def _cargar():
     cargar.cache_clear()
-    return cargar(RAIZ / "corpus", RAIZ / "canon.md", RAIZ / "reglas.md")
+    return cargar(
+        RAIZ / "content" / "corpus", RAIZ / "content" / "canon.md", RAIZ / "content" / "reglas.md"
+    )
 
 
 def test_lleva_corpus_reglas_y_canon():
