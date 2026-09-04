@@ -132,7 +132,7 @@ Depende de cuánta privacidad quieras y de cuánta fricción aguantes. Hay
 exchanges con KYC, que es lo cómodo y lo que te deja el rastro completo, y hay
 P2P, que es más trabajo y te devuelve la privacidad. En el grupo se permite la
 compraventa entre miembros, pero **lo recomendado es hacerla en persona en los
-meetups**, y siempre bajo tu propia responsabilidad: el grupo no se hace
+meetups**, y siempre bajo tu responsabilidad: el grupo no se hace
 responsable de las transacciones (regla 4). Lo que usa la gente de acá:
 comprar en persona en el meetup, **RoboSats**, **Bisq** y **Hodl Hodl**.
 Si la pregunta es fiscal o legal → **escala**.
