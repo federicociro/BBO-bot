@@ -70,6 +70,30 @@ de conversación al final). Medido después: de 200-400 palabras a 44-97, y
 **Lección**: el límite de gasto no puede vivir solo en el presupuesto diario. La
 concurrencia es lo que rompe la economía de la caché, y no se ve venir.
 
+### 2026-09-04 — la promesa falsa
+
+Al meter en el canon el fallo de RNG de Coldcard salió un fallo peor que el que
+se arreglaba. Tres reglas peleándose, en cascada:
+
+1. "Al escalar no volvés a opinar" hizo que ante una Coldcard posiblemente
+   comprometida escalara **sin dar ninguna instrucción**. Alguien con fondos en
+   riesgo se quedaba esperando.
+2. Arreglado eso, la regla de brevedad (2-4 frases) recortaba las
+   instrucciones. Hubo que añadir la excepción: con fondos en riesgo, la
+   brevedad no manda.
+3. Y entonces apareció el grave: decía *"esto lo mira un humano"* **sin llamar
+   a `escalar`**. Una promesa falsa: la persona espera ayuda que nadie mandó.
+   Peor que no escalar.
+
+La instrucción en el prompt no bastó — fallaba una de cada dos. Es un
+invariante de seguridad, así que ahora hay red en el código: si el texto promete
+un humano y no hubo escalado, se fuerza uno. Prefiere un aviso de más a alguien
+esperando de menos, que es la misma regla de oro de siempre.
+
+**Lección**: las reglas de la persona interactúan, y las interacciones no se ven
+leyendo el prompt. Solo salen ejercitando casos límite. Y lo que sea invariante
+de seguridad va en código, no en el prompt.
+
 ### Pendiente
 
 - [ ] **`ANTHROPIC_API_KEY`**: no hay ninguna todavía. Nada del camino que pasa

@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import re
 from dataclasses import dataclass
 
 import anthropic
@@ -17,12 +18,24 @@ from .budget import Presupuesto
 from .config import Config
 from .corpus import cargar
 from .persona import PERSONA
-from .tools import Caja, construir
+from .tools import Caja, Escalado, construir
 
 log = logging.getLogger(__name__)
 
 MAX_TOKENS = 700
 BETAS = ["server-side-fallback-2026-07-01"]
+
+# Prometer un humano sin avisarlo deja a alguien esperando ayuda que no viene.
+# La instrucción en el prompt no basta: falla, y acá falla caro. Si el texto
+# dice que hay un humano en camino, lo hay — aunque el modelo no llamara a la
+# herramienta.
+PROMESA_DE_HUMANO = re.compile(
+    r"(lo (mira|miran|va a mirar|verá|ve)\s+(un|una|los|las)?\s*(humano|admin)"
+    r"|ya (está|estás)? ?avisad|avis[éo] a (los|un) admin"
+    r"|un admin (te|lo|se)|los admins (te|lo|se)"
+    r"|te (escriben|escribirá|contactan|contactarán))",
+    re.IGNORECASE,
+)
 
 
 @dataclass
@@ -101,7 +114,20 @@ class Voz:
                 )
             texto = "".join(b.text for b in mensaje.content if b.type == "text") or texto
 
-        return Respuesta(texto.strip(), caja.escalados, tokens, cache_leida)
+        texto = texto.strip()
+        if PROMESA_DE_HUMANO.search(texto) and not caja.escalados:
+            log.warning("prometió un humano sin escalar; se fuerza el escalado")
+            caja.escalados.append(
+                Escalado(
+                    motivo="aviso forzado",
+                    resumen=(
+                        "Roser le dijo a la persona que un humano lo miraría, pero no "
+                        "llamó a escalar. Se avisa igual por si acaso. Pregunta: "
+                        + pregunta[:300]
+                    ),
+                )
+            )
+        return Respuesta(texto, caja.escalados, tokens, cache_leida)
 
     @property
     def activa(self) -> bool:

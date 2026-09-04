@@ -27,3 +27,24 @@ def test_alertas_tienen_freno():
     assert alertas._pasa_el_freno("x")
     assert not alertas._pasa_el_freno("x")
     assert alertas._pasa_el_freno("otra-clave")
+
+
+def test_no_se_promete_un_humano_sin_avisarlo():
+    """Peor que no escalar es decir que escalaste: la persona espera ayuda que
+    nadie mandó. La regla del prompt fallaba, así que hay red en el código."""
+    from bbo_bot.claude import PROMESA_DE_HUMANO as P
+
+    for frase in [
+        "Esto lo mira un humano de BBO.",
+        "Ya avisé a los admins, te escriben ellos.",
+        "Un admin te va a contactar.",
+        "Esto lo va a mirar un admin humano para acompañarte.",
+    ]:
+        assert P.search(frase), frase
+
+    for frase in [
+        "Nadie de BBO te escribe primero por privado.",
+        "En los meetups hacemos sesiones de introducción.",
+        "Sparrow en ordenador, BlueWallet en el móvil.",
+    ]:
+        assert not P.search(frase), frase

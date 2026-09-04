@@ -109,8 +109,8 @@ Mismo criterio: abierta, auditable, y que puedas verificar el firmware. En los
 talleres montamos **SeedSigner** — te lo construís vos, es air-gapped y
 completamente offline — y lo usamos con **Sparrow Wallet** por códigos QR.
 
-Además de SeedSigner: **BitBox**, **Jade** y **Passport**. **Coldcard no**, y
-**Trezor preferiblemente tampoco**.
+Además de SeedSigner: **BitBox**, **Jade** y **Passport**. **Coldcard no** (ver
+abajo, es serio), y **Trezor preferiblemente tampoco**.
 
 **Ledger, definitivamente no**, y el motivo no es técnico: es una máquina de
 filtrar datos de sus clientes. En 2020 se les escapó la base de datos de la
@@ -123,6 +123,35 @@ fabricante también es parte de tu modelo de amenaza**. No alcanza con que el
 cacharro sea bueno; la empresa sabe qué compraste y dónde vivís. Por eso en los
 talleres armamos SeedSigner con piezas genéricas: no hay lista de clientes que
 filtrar.
+
+### ¿Por qué no Coldcard?
+Por el fallo de generación de seeds de 2026, que es de los peores que se han
+visto en hardware wallets. Un error de firmware de **marzo de 2021** hacía que,
+al crear la seed, el aparato usara un generador de números pseudoaleatorios
+determinista en vez del hardware RNG. Resultado: seeds con tan poca entropía
+—en algunos casos unos 40 bits— que se podían reventar por fuerza bruta sin
+tocar el dispositivo.
+
+Se confirmaron más de **1.500 BTC robados de unas 7.300 direcciones**, por
+varios atacantes independientes. La primera oleada vació carteras unas 30 horas
+**antes** de que Coinkite lo hiciera público.
+
+El detalle que más nos interesa acá: quien generó la seed **con al menos 50
+tiradas de dados** no está afectado por este fallo. Los que no se fiaron de la
+caja y verificaron por su cuenta, se salvaron.
+
+### Tengo una Coldcard, ¿qué hago?
+Si la seed se generó en ese aparato entre marzo de 2021 y julio de 2026, y
+**no** la creaste con 50+ tiradas de dados: asumí que está comprometida.
+
+**Actualizar el firmware no arregla una seed ya creada.** Hay que generar una
+seed nueva con el firmware parcheado y **mover los fondos ahí**. El orden
+importa: primero preparás el destino nuevo, después movés.
+
+**Estas instrucciones se dan siempre, aunque además escales.** Alguien con
+fondos en riesgo necesita saber qué hacer ahora, no esperar a que un humano se
+conecte. Después de darlas → **escala de verdad, llamando a la herramienta**, para que
+un admin lo acompañe. Nunca anuncies que avisaste sin haber avisado.
 
 ### ¿Qué es la seed y dónde la guardo?
 Son las 12 o 24 palabras que **son** tus bitcoin: quien las tenga, los tiene.
@@ -148,6 +177,16 @@ meetups**, y siempre bajo tu responsabilidad: el grupo no se hace
 responsable de las transacciones (regla 4). Lo que usa la gente de acá:
 comprar en persona en el meetup, **RoboSats**, **Bisq** y **Hodl Hodl**.
 Si la pregunta es fiscal o legal → **escala**.
+
+### ¿Por qué insistís tanto con los dados?
+Porque no podés auditar la aleatoriedad de una caja cerrada. Un aparato con
+firmware defectuoso genera seeds débiles sin que nada se vea raro por fuera: no
+hay pantalla que te avise, no hay error, todo parece normal durante cinco años.
+
+El fallo de Coldcard de 2026 es la demostración: los únicos que no perdieron
+nada fueron los que aportaron su propia entropía con dados. Tirar dados es
+verificar en vez de confiar, aplicado a lo único que no se puede revisar
+después.
 
 ### ¿Cómo verifico lo que me descargo?
 Comprobando firmas y hashes antes de instalar. Es el hábito que separa a
