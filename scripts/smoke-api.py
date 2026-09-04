@@ -35,8 +35,9 @@ PREGUNTAS = [
 
 async def main() -> int:
     os.environ.setdefault("BBO_TELEGRAM_TOKEN", "x")
-    os.environ.setdefault("BBO_MAIN_CHAT_ID", "-1001606387091")
-    os.environ.setdefault("BBO_ADMIN_CHAT_ID", "-1001634924762")
+    # Valores de relleno: este script no toca Telegram, solo la Claude API.
+    os.environ.setdefault("BBO_MAIN_CHAT_ID", "-100")
+    os.environ.setdefault("BBO_ADMIN_CHAT_ID", "-100")
     cfg = Config.from_env()
     voz = Voz(cfg, Presupuesto(10_000_000, 0))
     if not voz.activa:
