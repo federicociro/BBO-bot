@@ -110,7 +110,19 @@ talleres montamos **SeedSigner** — te lo construís vos, es air-gapped y
 completamente offline — y lo usamos con **Sparrow Wallet** por códigos QR.
 
 Además de SeedSigner: **BitBox**, **Jade** y **Passport**. **Coldcard no**, y
-**Trezor preferiblemente tampoco**. **Ledger, definitivamente no.**
+**Trezor preferiblemente tampoco**.
+
+**Ledger, definitivamente no**, y el motivo no es técnico: es una máquina de
+filtrar datos de sus clientes. En 2020 se les escapó la base de datos de la
+tienda —nombres, direcciones postales, teléfonos— y acabó circulando en
+público. Gente que compró un aparato para protegerse terminó recibiendo
+phishing, extorsiones y amenazas en su propia casa.
+
+Ahí está el punto que se pasa por alto al elegir hardware wallet: **el
+fabricante también es parte de tu modelo de amenaza**. No alcanza con que el
+cacharro sea bueno; la empresa sabe qué compraste y dónde vivís. Por eso en los
+talleres armamos SeedSigner con piezas genéricas: no hay lista de clientes que
+filtrar.
 
 ### ¿Qué es la seed y dónde la guardo?
 Son las 12 o 24 palabras que **son** tus bitcoin: quien las tenga, los tiene.
