@@ -1,61 +1,59 @@
-# Cómo colaborar
+# Contribuir
 
-Lo que más falta no es código: es **canon**. Si contestás las mismas preguntas
-una y otra vez en el grupo, esa respuesta debería estar acá.
+Repo técnico. Los admins no técnicos de BBO **no tocan esto**: nos piden
+cambios en el grupo y quien sabe de código hace de interfaz. Igual que ellos no
+nos piden a nosotros que llevemos la comunicación de la comunidad.
 
-## Editar lo que dice Roser
+## Qué se toca para cambiar a Roser
 
 | Querés cambiar | Editás |
 |---|---|
 | Qué responde a una pregunta concreta | `canon.md` |
-| Las reglas del grupo | `reglas.md` |
-| Su carácter, sus límites, cuándo escala | `bbo_bot/persona.py` |
+| Su carácter, sus límites, cuándo pasa a un admin | `bbo_bot/persona.py` |
+| Las reglas del grupo (texto oficial, verbatim) | `reglas.md` |
 | Los textos fundacionales | `corpus/` |
 
-**No hace falta saber programar para tocar `canon.md` ni `reglas.md`.** Se
-editan desde la web de GitHub: botón del lápiz, escribís, "Propose changes".
+Los tres primeros van dentro del prompt cacheado. Cambiarlos invalida la caché:
+la siguiente pregunta paga la escritura, las de después vuelven a leerla. Es
+barato, pero no es gratis — no los toques por cosmética.
 
-### Cómo se escribe una entrada del canon
+## Escribir canon
 
 ````markdown
 ### ¿La pregunta, tal como la hace la gente?
-La respuesta en la voz de Roser: directa, 3-4 frases, con posición.
+La respuesta en la voz de Roser: directa, 2-4 frases, con posición.
 ````
 
-Reglas de la casa:
-
-- **No es un FAQ que se copia y pega.** Es a la vez el contenido correcto y el
-  ejemplo de tono: Roser lo adapta a cómo venga formulada la pregunta.
-- **Escribilo como hablás en el grupo**, no como un manual. Si suena a folleto
-  de banco, está mal.
+- **No es un FAQ que se copia y pega.** Es el contenido correcto *y* el ejemplo
+  de tono a la vez.
+- **Nunca un veredicto sin motivo.** Si escribís "X no" y no explicás por qué,
+  Roser se inventa la razón — y cada vez una distinta. Pasó con Ledger.
 - **Con posición.** "Hay opiniones para todos los gustos" no es una respuesta.
-- **Nada de consejo financiero**: sin precios objetivo, sin predicciones.
-- Si la respuesta correcta es "esto lo mira un humano", escribí `→ **escala**`.
-- `[[?]]` marca lo que todavía no está decidido. Roser dice que no está
-  definido en lugar de inventárselo.
+- Sin consejo financiero: ni precios objetivo, ni predicciones.
+- Si el caso lo tiene que ver una persona, escribí `→ **escala**`. Roser no
+  avisa a nadie: le dice a quien pregunta que responda con `@admin`, y de eso
+  se encarga Rose.
+- `[[?]]` marca lo indefinido. Roser dice que no está decidido en vez de
+  inventárselo.
 
-## Que Roser se entere
-
-En producción se actualiza sola: `git pull` cada 15 minutos y, si el canon
-cambió, lo recarga. Mergeáis y en un cuarto de hora está en vivo.
-
-Si no querés esperar: `/recargar` por privado del dueño o desde el log de
-admins. Cualquiera de las dos vías reescribe la caché del prompt en la
-siguiente pregunta (unos céntimos); las de después vuelven a leerla.
-
-## Código
+## Desarrollo
 
 ```bash
 uv sync --extra dev
-uv run pytest
+uv run pytest                              # rápido, sin red
+uv run python scripts/repaso.py            # 40 preguntas contra la API real
 ```
 
-Conventional Commits con scope. Antes de tocar la lógica de escalado o el
-presupuesto, leé `SPEC.md` en el vault: son las dos cosas que, si fallan,
-fallan caro.
+`scripts/repaso.py` **gasta dinero de verdad** (~1 $ por pasada). No lo metas
+en CI.
 
-**Nunca commitees secrets.** `.env` y `.env.qa` están en `.gitignore` y hay
-gitleaks en pre-commit:
+Conventional Commits con scope. Antes de tocar la lógica de coste
+(`budget.py`, el agrupado de mensajes en `bot.py`) leé el incidente de los dos
+euros en `NOTES.md`: la concurrencia rompe la economía de la caché y no se ve
+venir.
+
+**Nunca commitees secrets.** `.env` y `.env.qa` están ignorados y hay gitleaks
+en pre-commit:
 
 ```bash
 pre-commit install && pre-commit install --hook-type commit-msg

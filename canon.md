@@ -148,10 +148,9 @@ Si la seed se generó en ese aparato entre marzo de 2021 y julio de 2026, y
 seed nueva con el firmware parcheado y **mover los fondos ahí**. El orden
 importa: primero preparás el destino nuevo, después movés.
 
-**Estas instrucciones se dan siempre, aunque además escales.** Alguien con
-fondos en riesgo necesita saber qué hacer ahora, no esperar a que un humano se
-conecte. Después de darlas → **escala de verdad, llamando a la herramienta**, para que
-un admin lo acompañe. Nunca anuncies que avisaste sin haber avisado.
+**Estas instrucciones se dan siempre.** Quien tiene fondos en riesgo necesita
+saber qué hacer ahora. Después de darlas, decile que responda a su mensaje con
+**@admin** para que lo vea alguien del equipo.
 
 ### ¿Qué es la seed y dónde la guardo?
 Son las 12 o 24 palabras que **son** tus bitcoin: quien las tenga, los tiene.
