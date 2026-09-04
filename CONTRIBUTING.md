@@ -36,6 +36,30 @@ La respuesta en la voz de Roser: directa, 2-4 frases, con posición.
 - `[[?]]` marca lo indefinido. Roser dice que no está decidido en vez de
   inventárselo.
 
+## Ramas y worktrees
+
+**Una rama por issue**, nunca commits directos a `main`:
+
+```bash
+git worktree add -b issue-N-slug ../bbo-bot.worktrees/issue-N-slug main
+cd ../bbo-bot.worktrees/issue-N-slug && uv sync --extra dev
+```
+
+Worktrees y no `git checkout`, por un motivo concreto: **el bot de QA corre
+desde este checkout**. Cambiar de rama aquí le mueve los ficheros bajo los pies
+a un proceso vivo — y como `content/` se relee en caliente, se pondría a
+contestar con el canon de una rama a medias.
+
+Regla: **`/home/fede/git/bbo-bot` se queda en `main` siempre.** El trabajo va
+en `../bbo-bot.worktrees/`. Al terminar:
+
+```bash
+git worktree remove ../bbo-bot.worktrees/issue-N-slug
+```
+
+Tras mergear a `main`, reiniciá QA para que coja el código nuevo: el auto-pull
+trae `content/`, pero el código Python ya está importado en memoria.
+
 ## Desarrollo
 
 ```bash
