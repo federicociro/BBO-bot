@@ -24,6 +24,8 @@ def test_alertas_tienen_freno():
     import bbo_bot.alertas as alertas
 
     alertas._ultima.clear()
+    # La primera siempre pasa, aunque la máquina acabe de arrancar y
+    # monotonic() valga cuatro segundos.
     assert alertas._pasa_el_freno("x")
     assert not alertas._pasa_el_freno("x")
     assert alertas._pasa_el_freno("otra-clave")
@@ -48,3 +50,13 @@ def test_no_se_promete_un_humano_sin_avisarlo():
         "Sparrow en ordenador, BlueWallet en el móvil.",
     ]:
         assert not P.search(frase), frase
+
+
+def test_la_primera_alerta_pasa_en_maquina_recien_arrancada(monkeypatch):
+    """monotonic() cuenta desde el arranque: con centinela 0.0, un contenedor
+    nuevo se tragaba la primera alerta de cada tipo durante una hora."""
+    import bbo_bot.alertas as alertas
+
+    alertas._ultima.clear()
+    monkeypatch.setattr(alertas.time, "monotonic", lambda: 4.0)
+    assert alertas._pasa_el_freno("arranque")

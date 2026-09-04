@@ -22,8 +22,13 @@ _ultima: dict[str, float] = {}
 
 
 def _pasa_el_freno(clave: str) -> bool:
+    # El centinela es None, no 0.0: `monotonic()` cuenta desde el arranque de la
+    # máquina, así que en un contenedor recién levantado `ahora - 0.0` es menor
+    # que la ventana y se tragaba en silencio la primera alerta de cada tipo
+    # durante la primera hora de vida. Justo cuando más falta hacen.
     ahora = time.monotonic()
-    if ahora - _ultima.get(clave, 0.0) < VENTANA_S:
+    ultima = _ultima.get(clave)
+    if ultima is not None and ahora - ultima < VENTANA_S:
         return False
     _ultima[clave] = ahora
     return True
