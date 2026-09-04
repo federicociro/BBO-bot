@@ -21,7 +21,7 @@ from .tools import Caja, construir
 
 log = logging.getLogger(__name__)
 
-MAX_TOKENS = 1024
+MAX_TOKENS = 700
 BETAS = ["server-side-fallback-2026-07-01"]
 
 

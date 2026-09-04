@@ -45,6 +45,31 @@ curl .../getMe               # @BBO_8333_bot, privacy mode ON
 - Feed iCal de `bitcoin-barcelona`: da `DTSTART` con TZID, `SUMMARY`, `URL`.
 - Token de Telegram válido.
 
+### 2026-09-04 — el incidente de los dos euros
+
+Alguien pegó el raw de una wiki (una BIP) repartido en **ocho mensajes
+seguidos**. Roser contestó ocho veces, con ensayos de 200-400 palabras cada uno.
+Coste: un par de euros por lo que debería haber sido una respuesta.
+
+Tres fallos encadenados, y el caro no era el evidente:
+
+1. **Ocho llamadas casi simultáneas.** Una entrada de caché que se está
+   escribiendo todavía no se puede leer, así que varias pagaron el prefijo
+   entero (33k tokens) a precio completo en vez de a precio de caché. Eso solo
+   multiplica por diez.
+2. **Sin límite de entrada.** El documento entero entraba al prompt.
+3. **Respuestas larguísimas**, con thinking facturado como salida.
+
+Arreglos: se agrupan los mensajes de un mismo usuario con debounce de 8 s y se
+contesta una sola vez; cerrojo por usuario para que nunca haya dos llamadas en
+paralelo; entrada por encima de 1500 caracteres ni se manda al modelo; y regla
+dura de longitud en la persona (2-4 frases, una idea por respuesta, sin menús
+de conversación al final). Medido después: de 200-400 palabras a 44-97, y
+`max_tokens` de 1024 a 700.
+
+**Lección**: el límite de gasto no puede vivir solo en el presupuesto diario. La
+concurrencia es lo que rompe la economía de la caché, y no se ve venir.
+
 ### Pendiente
 
 - [ ] **`ANTHROPIC_API_KEY`**: no hay ninguna todavía. Nada del camino que pasa

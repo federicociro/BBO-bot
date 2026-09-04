@@ -40,6 +40,8 @@ class Config:
     fiat: str
 
     cooldown_s: int
+    max_chars_entrada: int
+    ventana_agrupado_s: float
     daily_token_budget: int
 
     corpus_dir: Path = ROOT / "corpus"
@@ -70,6 +72,8 @@ class Config:
             meetup_group=os.environ.get("BBO_MEETUP_GROUP", "bitcoin-barcelona"),
             fiat=os.environ.get("BBO_FIAT", "EUR").upper(),
             cooldown_s=int(os.environ.get("BBO_COOLDOWN_S", "15")),
+            max_chars_entrada=int(os.environ.get("BBO_MAX_CHARS_ENTRADA", "1500")),
+            ventana_agrupado_s=float(os.environ.get("BBO_VENTANA_AGRUPADO_S", "8")),
             daily_token_budget=int(os.environ.get("BBO_DAILY_TOKEN_BUDGET", "500000")),
         )
 

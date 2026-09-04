@@ -190,9 +190,14 @@ def _va_dirigido(update: Update, bot_username: str, bot_id: int) -> bool:
 
 
 async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Encola el mensaje. No contesta acá: espera a ver si vienen más.
+
+    Pegar un documento en ocho mensajes seguidos disparaba ocho llamadas casi
+    simultáneas. Y como una caché que se está escribiendo todavía no se puede
+    leer, varias pagaban el prefijo entero a precio completo. Agrupar es, de
+    lejos, el ahorro más grande de todo el bot.
+    """
     cfg: Config = ctx.bot_data["cfg"]
-    voz: Voz = ctx.bot_data["voz"]
-    presupuesto: Presupuesto = ctx.bot_data["presupuesto"]
     msg = update.effective_message
     chat = update.effective_chat
     user = update.effective_user
@@ -215,14 +220,64 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         if not _va_dirigido(update, ctx.bot.username, ctx.bot.id):
             return
 
-    espera = presupuesto.espera(user.id)
-    if espera > 0:
-        await msg.reply_text(f"Dame {espera:.0f} segundos y seguimos.")
-        return
-    presupuesto.marcar(user.id)
+    clave = f"{chat.id}:{user.id}"
+    buffer = ctx.bot_data.setdefault("pendientes", {}).setdefault(clave, [])
+    buffer.append(msg.text or "")
 
-    await ctx.bot.send_chat_action(chat.id, ChatAction.TYPING)
-    r = await voz.responder(msg.text or "")
+    # Debounce: cada mensaje nuevo reinicia la cuenta atrás.
+    for job in ctx.job_queue.get_jobs_by_name(clave):
+        job.schedule_removal()
+    ctx.job_queue.run_once(
+        _contestar_agrupado, cfg.ventana_agrupado_s, name=clave,
+        data={"chat_id": chat.id, "user_id": user.id, "message_id": msg.message_id,
+              "chat_title": chat.title, "username": user.username},
+    )
+
+
+async def _contestar_agrupado(ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    cfg: Config = ctx.bot_data["cfg"]
+    voz: Voz = ctx.bot_data["voz"]
+    presupuesto: Presupuesto = ctx.bot_data["presupuesto"]
+    d = ctx.job.data
+    clave = f"{d['chat_id']}:{d['user_id']}"
+
+    trozos = ctx.bot_data.get("pendientes", {}).pop(clave, [])
+    if not trozos:
+        return
+    pregunta = "\n\n".join(t for t in trozos if t).strip()
+
+    async def responder(texto: str) -> None:
+        for i in range(0, len(texto), 4000):
+            await ctx.bot.send_message(
+                d["chat_id"], texto[i : i + 4000],
+                reply_to_message_id=d["message_id"] if i == 0 else None,
+            )
+
+    if len(pregunta) > cfg.max_chars_entrada:
+        log.info("entrada descartada: %s caracteres de %s", len(pregunta), d["user_id"])
+        await responder(
+            f"Me pegaste {len(pregunta)} caracteres en {len(trozos)} mensajes. "
+            "No leo documentos enteros: resumime la duda concreta en un párrafo "
+            "y te contesto. Si es un tema largo, da para una charla de meetup."
+        )
+        return
+
+    espera = presupuesto.espera(d["user_id"])
+    if espera > 0:
+        await responder(f"Dame {espera:.0f} segundos y seguimos.")
+        return
+    presupuesto.marcar(d["user_id"])
+
+    # Una sola llamada por usuario a la vez: dos en paralelo no comparten caché.
+    cerrojos = ctx.bot_data.setdefault("cerrojos", {})
+    cerrojo = cerrojos.setdefault(d["user_id"], asyncio.Lock())
+    if cerrojo.locked():
+        log.info("ya hay una respuesta en curso para %s", d["user_id"])
+        return
+
+    async with cerrojo:
+        await ctx.bot.send_chat_action(d["chat_id"], ChatAction.TYPING)
+        r = await voz.responder(pregunta)
 
     if not presupuesto.hay_saldo():
         await alertas.avisar(
@@ -233,11 +288,11 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
 
     texto = r.texto
     for esc in r.escalados:
-        if not await _avisar_admins(ctx, cfg, esc, chat, msg, user):
+        if not await _avisar_escalado(ctx, cfg, esc, d):
             await alertas.avisar(
                 ctx, cfg.owner_id, "escalado-perdido",
-                f"NO llegó un escalado al log de admins ({esc.motivo}). "
-                f"Revisá BBO_ADMIN_CHAT_ID.\n{_link(chat.id, msg.message_id)}",
+                f"NO llegó un escalado ({esc.motivo}). Revisá BBO_ESCALATION_CHAT_ID.\n"
+                f"{_link(d['chat_id'], d['message_id'])}",
                 siempre=True,
             )
             texto += (
@@ -245,16 +300,16 @@ async def on_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
                 "Escribile a uno directamente, no lo dejes acá."
             )
 
-    await _responder_largo(update, texto)
+    await responder(texto)
 
 
-async def _avisar_admins(ctx, cfg: Config, esc, chat, msg, user) -> bool:
-    quien = f"@{user.username}" if user.username else f"id {user.id}"
+async def _avisar_escalado(ctx, cfg: Config, esc, d: dict) -> bool:
+    quien = f"@{d['username']}" if d.get("username") else f"id {d['user_id']}"
     aviso = (
         f"⚠️ *Escalado* — {esc.motivo}\n\n"
         f"{esc.resumen}\n\n"
-        f"De: {quien} · en {chat.title or chat.id}\n"
-        f"{_link(chat.id, msg.message_id)}"
+        f"De: {quien} · en {d.get('chat_title') or d['chat_id']}\n"
+        f"{_link(d['chat_id'], d['message_id'])}"
     )
 
     # Urgente primero: esto tiene que llegar a alguien que lo lea hoy.
