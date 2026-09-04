@@ -36,14 +36,12 @@ Reglas de la casa:
 
 ## Que Roser se entere
 
-El canon se lee al arrancar. Después de mergear:
+En producción se actualiza sola: `git pull` cada 15 minutos y, si el canon
+cambió, lo recarga. Mergeáis y en un cuarto de hora está en vivo.
 
-```
-/recargar    # en el log de admins, o por privado del dueño
-```
-
-Relee todo en caliente. La siguiente pregunta reescribe la caché del prompt
-(unos céntimos); las de después vuelven a leerla.
+Si no querés esperar: `/recargar` por privado del dueño o desde el log de
+admins. Cualquiera de las dos vías reescribe la caché del prompt en la
+siguiente pregunta (unos céntimos); las de después vuelven a leerla.
 
 ## Código
 

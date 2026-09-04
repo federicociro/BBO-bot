@@ -377,6 +377,41 @@ async def on_cambio_de_chat(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> N
         log.exception("no pude salir del chat %s", chat.id)
 
 
+async def job_auto_pull(ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Trae los cambios del canon y recarga solo si algo cambió de verdad.
+
+    Sin esto, editar el canon en GitHub no llega a Roser hasta que alguien se
+    acuerde de /recargar — y nadie se acuerda.
+    """
+    cfg: Config = ctx.bot_data["cfg"]
+    voz: Voz = ctx.bot_data["voz"]
+
+    ok, detalle = await asyncio.to_thread(_git_pull, cfg)
+    if not ok:
+        log.warning("auto-pull falló: %s", detalle)
+        return
+    if "Already up to date" in detalle or "Ya está actualizado" in detalle:
+        return
+
+    try:
+        chars = await asyncio.to_thread(voz.recargar)
+    except Exception:  # noqa: BLE001
+        log.exception("auto-pull trajo cambios pero no pude recargar")
+        await alertas.avisar(
+            ctx, cfg.owner_id, "recarga-fallida",
+            "traje cambios del canon pero no pude recargarlos. Sigo con el anterior.",
+            siempre=True,
+        )
+        return
+
+    log.info("canon recargado tras auto-pull: %s chars", chars)
+    await alertas.avisar(
+        ctx, cfg.owner_id, "canon-actualizado",
+        f"canon actualizado desde git y recargado ({chars} caracteres). {detalle}",
+        siempre=True,
+    )
+
+
 # --- meetup: borrador para los admins, publica un humano ------------------
 
 
@@ -451,6 +486,11 @@ def arrancar() -> None:
 
     if app.job_queue:
         app.job_queue.run_daily(job_meetup, time=dtime(hour=18, minute=0))
+        if cfg.git_pull and cfg.auto_pull_min:
+            app.job_queue.run_repeating(
+                job_auto_pull, interval=cfg.auto_pull_min * 60, first=60
+            )
+            log.info("auto-pull del canon cada %s min", cfg.auto_pull_min)
 
     if cfg.dm_abierto:
         log.warning("BBO_DM_OPEN activo: el privado está abierto a cualquiera (solo QA)")

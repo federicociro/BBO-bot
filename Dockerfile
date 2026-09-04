@@ -1,14 +1,19 @@
 FROM python:3.13-slim
 
-RUN useradd -m -u 1000 bbo
-WORKDIR /app
+# git para que /recargar y el auto-pull funcionen dentro del contenedor
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 1000 bbo
 
+WORKDIR /app
 COPY pyproject.toml ./
 RUN pip install --no-cache-dir . && rm -rf /root/.cache
 
 COPY bbo_bot/ ./bbo_bot/
-COPY corpus/ ./corpus/
-COPY canon.md reglas.md ./
+
+# El material NO se hornea en la imagen: se monta el checkout de git, para que
+# editar el canon en GitHub llegue a Roser sin reconstruir nada.
+VOLUME ["/app/corpus", "/app/canon.md", "/app/reglas.md"]
 
 USER bbo
 CMD ["python", "-m", "bbo_bot"]
