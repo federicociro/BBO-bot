@@ -50,15 +50,29 @@ class Voz:
             log.warning("sin credenciales de Anthropic: el Q&A queda desactivado")
         else:
             self.client = anthropic.Anthropic()
-        # Se arma una vez: el prefijo tiene que ser idéntico en cada request.
+        # El prefijo tiene que ser idéntico en cada request; solo cambia si
+        # alguien recarga a propósito tras editar el canon.
+        self._system: list = []
+        self.recargar()
+
+    def recargar(self) -> int:
+        """Relee corpus, reglas y canon. Devuelve el tamaño del prefijo en chars.
+
+        Invalida la caché del prompt a propósito: la siguiente pregunta paga la
+        escritura y las de después vuelven a leer. Es el precio de editar en
+        caliente, y es barato comparado con redesplegar.
+        """
+        cargar.cache_clear()
+        material = cargar(self.cfg.corpus_dir, self.cfg.canon_path, self.cfg.reglas_path)
         self._system = [
             {"type": "text", "text": PERSONA},
             {
                 "type": "text",
-                "text": cargar(cfg.corpus_dir, cfg.canon_path, cfg.reglas_path),
+                "text": material,
                 "cache_control": {"type": "ephemeral"},
             },
         ]
+        return len(material)
 
     def _turno(self, pregunta: str, caja: Caja) -> Respuesta:
         runner = self.client.beta.messages.tool_runner(

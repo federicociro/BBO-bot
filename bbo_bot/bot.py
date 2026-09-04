@@ -124,6 +124,52 @@ async def cmd_reglas(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     await _responder_largo(update, cuerpo.strip())
 
 
+async def cmd_recargar(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Relee el canon tras editarlo. Solo dueño o desde el log de admins."""
+    cfg: Config = ctx.bot_data["cfg"]
+    voz: Voz = ctx.bot_data["voz"]
+    user = update.effective_user
+    chat = update.effective_chat
+    if user.id != cfg.owner_id and chat.id != cfg.admin_chat_id:
+        return
+
+    if cfg.git_pull:
+        ok, detalle = await asyncio.to_thread(_git_pull, cfg)
+        if not ok:
+            await update.effective_message.reply_text(f"No pude actualizar desde git: {detalle}")
+            return
+        await update.effective_message.reply_text(f"git: {detalle}")
+
+    try:
+        chars = await asyncio.to_thread(voz.recargar)
+    except Exception as e:  # noqa: BLE001
+        await update.effective_message.reply_text(f"No pude recargar: {e}")
+        log.exception("fallo al recargar el material")
+        return
+    await update.effective_message.reply_text(
+        f"Material recargado: {chars:,} caracteres. "
+        "La próxima pregunta reescribe la caché.".replace(",", ".")
+    )
+
+
+def _git_pull(cfg: Config) -> tuple[bool, str]:
+    import subprocess
+
+    raiz = cfg.canon_path.parent
+    if not (raiz / ".git").exists():
+        return False, "esto no es un checkout de git"
+    try:
+        r = subprocess.run(
+            ["git", "-C", str(raiz), "pull", "--ff-only"],
+            capture_output=True, text=True, timeout=60,
+        )
+    except subprocess.TimeoutExpired:
+        return False, "git pull tardó demasiado"
+    if r.returncode != 0:
+        return False, (r.stderr or r.stdout).strip()[:200]
+    return True, (r.stdout or "sin cambios").strip().splitlines()[-1][:200]
+
+
 async def cmd_chatid(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     """El id que hay que poner en el .env, dicho por el propio bot."""
     chat = update.effective_chat
@@ -343,6 +389,7 @@ def arrancar() -> None:
     app.add_handler(CommandHandler("cita", cmd_cita))
     app.add_handler(CommandHandler("reglas", cmd_reglas))
     app.add_handler(CommandHandler("chatid", cmd_chatid))
+    app.add_handler(CommandHandler("recargar", cmd_recargar))
     app.add_handler(CallbackQueryHandler(on_boton))
     app.add_handler(ChatMemberHandler(on_cambio_de_chat, ChatMemberHandler.MY_CHAT_MEMBER))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
