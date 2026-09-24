@@ -8,7 +8,7 @@ El nombre es un guiño a Rose, la bot que modera el grupo: Rose pone orden,
 Roser pone contexto. Perspicaz, con carácter y algo picante — pero el filo va
 contra las ideas y las estafas, nunca contra quien pregunta.
 
-El spec vive en el vault: `notes_sync/bbo-project/SPEC.md`.
+El spec vive en el vault: `notes_sync/bbo-project/spec.md`.
 
 ## Cómo funciona
 

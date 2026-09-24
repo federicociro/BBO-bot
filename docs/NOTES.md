@@ -4,7 +4,7 @@ Bitácora. Lo que se decidió y por qué, y lo que falta.
 
 ## 2026-09-03 — arranque
 
-Repo creado a partir de `notes_sync/bbo-project/SPEC.md`. Antes hubo un
+Repo creado a partir de `notes_sync/bbo-project/spec.md`. Antes hubo un
 scaffold sobre Ollama que se borró entero: la arquitectura pasó a Claude API.
 
 ### Decisiones
