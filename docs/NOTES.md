@@ -116,3 +116,22 @@ de seguridad va en código, no en el prompt.
 - [ ] Rotar el token de Telegram con `/revoke` (se compartió en claro) y
       guardarlo en `rbw`.
 - [ ] Deploy: compose en `homelab-docker/`, entrada en `ansible-plays`.
+
+### 2026-10-25 — Opus 5.5
+
+- `BBO_MODEL` por defecto pasa a `claude-opus-5-5` (`config.py`, `.env.example`,
+  `compose.yaml`). Es más barato que Opus 5: $4/$20 contra $5/$25 por MTok.
+- `claude.py` ya era compatible y no se toca: thinking adaptive (en 5.5 no se
+  puede apagar), `effort` explícito (el default de 5.5 es `medium`, el de 5 era
+  `high`), sin `tool_choice` forzado (en 5.5 da 400) y `fallbacks="default"` con
+  `server-side-fallback-2026-07-01`.
+- **Riesgo a medir:** `MAX_TOKENS=700` incluye el thinking. Una respuesta larga de
+  fondos en riesgo (Coldcard) puede salir cortada o vacía ("No sé qué contestar").
+  Es lo primero que hay que mirar en el informe del repaso real.
+- Repaso: se corrió **a mano, sin API**, en una sesión de Claude Code: 10/10 en
+  Escalado, nada pasa de 140 palabras y no salta `PROMESA_DE_HUMANO`. Sirve para
+  contenido y tono, no como regresión. **El `scripts/repaso.py` real sigue
+  pendiente**: no hay `ANTHROPIC_API_KEY` en ningún lado.
+- **Contradicción en `canon.md`:** "Cómo se usa" dice que con → escala el bot "avisa
+  que lo mira un humano". Es justo la promesa falsa que la persona prohíbe y que
+  `PROMESA_DE_HUMANO` fuerza a escalar. Hay que corregirla antes de producción.

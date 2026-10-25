@@ -68,7 +68,7 @@ class Config:
             ),
             git_pull=os.environ.get("BBO_GIT_PULL", "").strip() in {"1", "true", "yes"},
             auto_pull_min=int(os.environ.get("BBO_AUTO_PULL_MIN", "0")),
-            model=os.environ.get("BBO_MODEL", "claude-opus-5"),
+            model=os.environ.get("BBO_MODEL", "claude-opus-5-5"),
             effort=os.environ.get("BBO_EFFORT", "medium"),
             mempool_url=os.environ.get("BBO_MEMPOOL_URL", "").rstrip("/"),
             meetup_group=os.environ.get("BBO_MEETUP_GROUP", "bitcoin-barcelona"),
